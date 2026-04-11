@@ -21,8 +21,8 @@
       "PackagePath": "staticwebassets\\index.html"
     },
     {
-      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\main-IMSIHRO3.js",
-      "PackagePath": "staticwebassets\\main-IMSIHRO3.js"
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\main-LSARWYHP.js",
+      "PackagePath": "staticwebassets\\main-LSARWYHP.js"
     },
     {
       "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\polyfills-B6TNHZQ6.js",
@@ -33,12 +33,68 @@
       "PackagePath": "staticwebassets\\styles-NWLK27WH.css"
     },
     {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\Bloom-1.jpeg",
+      "PackagePath": "staticwebassets\\uploads\\productos\\Bloom-1.jpeg"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\Bloom-10L.jpeg",
+      "PackagePath": "staticwebassets\\uploads\\productos\\Bloom-10L.jpeg"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\Bloom-5.jpeg",
+      "PackagePath": "staticwebassets\\uploads\\productos\\Bloom-5.jpeg"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\Grow-10.jpeg",
+      "PackagePath": "staticwebassets\\uploads\\productos\\Grow-10.jpeg"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\Silic-1L.jpeg",
+      "PackagePath": "staticwebassets\\uploads\\productos\\Silic-1L.jpeg"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\Ultra-10.jpeg",
+      "PackagePath": "staticwebassets\\uploads\\productos\\Ultra-10.jpeg"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\XXL-500.jpeg",
+      "PackagePath": "staticwebassets\\uploads\\productos\\XXL-500.jpeg"
+    },
+    {
       "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\carbocandy-5.jpeg",
       "PackagePath": "staticwebassets\\uploads\\productos\\carbocandy-5.jpeg"
     },
     {
       "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\carbocandy.jpeg",
       "PackagePath": "staticwebassets\\uploads\\productos\\carbocandy.jpeg"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\reactive-1.jpeg",
+      "PackagePath": "staticwebassets\\uploads\\productos\\reactive-1.jpeg"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\reactive-10.jpeg",
+      "PackagePath": "staticwebassets\\uploads\\productos\\reactive-10.jpeg"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\reactive-5.jpeg",
+      "PackagePath": "staticwebassets\\uploads\\productos\\reactive-5.jpeg"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\roots-1.jpeg",
+      "PackagePath": "staticwebassets\\uploads\\productos\\roots-1.jpeg"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\roots-10.jpeg",
+      "PackagePath": "staticwebassets\\uploads\\productos\\roots-10.jpeg"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\roots-5.jpeg",
+      "PackagePath": "staticwebassets\\uploads\\productos\\roots-5.jpeg"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\speed-booster-10L.jpeg",
+      "PackagePath": "staticwebassets\\uploads\\productos\\speed-booster-10L.jpeg"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.TiendaApi.Microsoft.AspNetCore.StaticWebAssets.props",

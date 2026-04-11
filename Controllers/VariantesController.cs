@@ -32,41 +32,16 @@ namespace TiendaApi.Controllers
             var productoPadre = await _context.Productos.FindAsync(variante.ProductoId);
             if (productoPadre == null) return NotFound("Producto padre no encontrado");
 
-            var productoHijo = new Producto
-            {
-                Nombre = $"{productoPadre.Nombre} {variante.Nombre}",
-                Descripcion = productoPadre.Descripcion,
-                Precio = variante.Precio,
-                Stock = variante.Stock,
-                ImagenUrl = variante.ImagenUrl ?? productoPadre.ImagenUrl, // ← imagen propia o del padre
-                CategoriaId = productoPadre.CategoriaId
-            };
-
-            _context.Productos.Add(productoHijo);
-            await _context.SaveChangesAsync();
-
-            variante.ProductoVarianteId = productoHijo.Id;
             _context.VariantesProducto.Add(variante);
             await _context.SaveChangesAsync();
 
-            return Ok(new { variante, productoHijo });
+            return Ok(variante);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> EditarVariante(int id, [FromBody] VarianteProducto variante)
         {
             if (id != variante.Id) return BadRequest();
-
-            var productoHijo = await _context.Productos.FindAsync(variante.ProductoVarianteId);
-            if (productoHijo != null)
-            {
-                var productoPadre = await _context.Productos.FindAsync(variante.ProductoId);
-                productoHijo.Nombre = $"{productoPadre!.Nombre} {variante.Nombre}";
-                productoHijo.Precio = variante.Precio;
-                productoHijo.Stock = variante.Stock;
-                if (variante.ImagenUrl != null)
-                    productoHijo.ImagenUrl = variante.ImagenUrl;
-            }
 
             _context.Entry(variante).State = EntityState.Modified;
             await _context.SaveChangesAsync();
@@ -78,10 +53,6 @@ namespace TiendaApi.Controllers
         {
             var variante = await _context.VariantesProducto.FindAsync(id);
             if (variante == null) return NotFound();
-
-            var productoHijo = await _context.Productos.FindAsync(variante.ProductoVarianteId);
-            if (productoHijo != null)
-                _context.Productos.Remove(productoHijo);
 
             _context.VariantesProducto.Remove(variante);
             await _context.SaveChangesAsync();
