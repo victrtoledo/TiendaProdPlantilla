@@ -96,4 +96,10 @@ app.MapControllers();
 // 🔥 CLAVE PARA ANGULAR (SPA routing)
 app.MapFallbackToFile("index.html");
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<TiendaDbContext>();
+    db.Database.EnsureCreated(); // 👈 IMPORTANTE
+}
+
 app.Run();
