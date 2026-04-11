@@ -32,6 +32,8 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
+         try
+        {
         if (await _context.Usuarios.AnyAsync(u => u.NombreUsuario == request.NombreUsuario || u.Correo == request.Correo))
             return BadRequest("El usuario ya existe.");
 
@@ -45,8 +47,18 @@ public class AuthController : ControllerBase
 
         _context.Usuarios.Add(usuario);
         await _context.SaveChangesAsync();
+        
+        return Ok(new { message = "Usuario registrado correctamente." });
+       
+            // tu código
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.ToString());
+        }
 
-       return Ok(new { message = "Usuario registrado correctamente." });
+       
+
 
     }
 
