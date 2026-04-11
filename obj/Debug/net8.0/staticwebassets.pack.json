@@ -1,0 +1,25 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\carbocandy.jpeg",
+      "PackagePath": "staticwebassets\\uploads\\productos\\carbocandy.jpeg"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.TiendaApi.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.TiendaApi.props",
+      "PackagePath": "build\\TiendaApi.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.TiendaApi.props",
+      "PackagePath": "buildMultiTargeting\\TiendaApi.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.TiendaApi.props",
+      "PackagePath": "buildTransitive\\TiendaApi.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

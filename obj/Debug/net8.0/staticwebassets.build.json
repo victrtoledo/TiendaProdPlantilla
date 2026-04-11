@@ -1,0 +1,39 @@
+{
+  "Version": 1,
+  "Hash": "CcaazEoo3o06Ub01Ih2IvSkY/akjchCVBny3eQ9Ygws=",
+  "Source": "TiendaApi",
+  "BasePath": "_content/TiendaApi",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "TiendaApi\\wwwroot",
+      "Source": "TiendaApi",
+      "ContentRoot": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\",
+      "BasePath": "_content/TiendaApi",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\carbocandy.jpeg",
+      "SourceId": "TiendaApi",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\",
+      "BasePath": "_content/TiendaApi",
+      "RelativePath": "uploads/productos/carbocandy.jpeg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\productos\\carbocandy.jpeg"
+    }
+  ]
+}
