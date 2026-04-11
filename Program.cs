@@ -7,16 +7,16 @@ using TiendaApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🔹 DB (en producción vendrá de Azure)
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+// 🔹 DB (Azure o local)
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                       ?? "Data Source=tienda.db";
 
 builder.Services.AddDbContext<TiendaDbContext>(options =>
     options.UseSqlite(connectionString)
 );
 
-// 🔹 JWT (desde Azure App Settings)
-var jwtSecretKey = builder.Configuration["Jwt:Key"] 
+// 🔹 JWT
+var jwtSecretKey = builder.Configuration["Jwt:Key"]
                    ?? throw new Exception("JWT Key no configurada");
 
 var keyBytes = Encoding.ASCII.GetBytes(jwtSecretKey);
@@ -28,14 +28,13 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = true; // 🔥 obligatorio en Azure
+    options.RequireHttpsMetadata = true;
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
 
-        // 🔥 ahora sí usamos issuer/audience
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
@@ -47,16 +46,17 @@ builder.Services.AddAuthentication(options =>
 
 // 🔹 Controllers
 builder.Services.AddControllers().AddJsonOptions(x =>
-    x.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles
+    x.JsonSerializerOptions.ReferenceHandler =
+        System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles
 );
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// 🔹 Email
+// 🔹 Services
 builder.Services.AddScoped<EmailService>();
 
-// 🔹 CORS (más seguro que AllowAnyOrigin)
+// 🔹 CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularApp", policy =>
@@ -73,18 +73,14 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// 🔹 Swagger solo en desarrollo
+// 🔹 Swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-else
-{
-    app.UseDeveloperExceptionPage(); // 👈 ESTO
-}
 
-// 🔥 Angular (SPA)
+// 🔥 SPA Angular
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
@@ -97,13 +93,16 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// 🔥 CLAVE PARA ANGULAR (SPA routing)
+// 🔥 Angular routing fallback
 app.MapFallbackToFile("index.html");
 
+// 🔥 BASE DE DATOS (CORRECTO)
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<TiendaDbContext>();
-    db.Database.EnsureCreated(); // 👈 IMPORTANTE
+
+    // ✔ aplica migraciones en vez de recrear BD
+    db.Database.Migrate();
 }
 
 app.Run();
