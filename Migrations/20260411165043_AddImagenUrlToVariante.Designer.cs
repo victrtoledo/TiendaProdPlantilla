@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TiendaApi.Data;
 
@@ -10,9 +11,11 @@ using TiendaApi.Data;
 namespace TiendaApi.Migrations
 {
     [DbContext(typeof(TiendaDbContext))]
-    partial class TiendaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260411165043_AddImagenUrlToVariante")]
+    partial class AddImagenUrlToVariante
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.7");

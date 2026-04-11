@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TiendaApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2e37ebd6bdd07b197232557e582b913f3c36feaa")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3ffd490f33d128b57effe24a97b5622e7e25b8fe")]
 [assembly: System.Reflection.AssemblyProductAttribute("TiendaApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TiendaApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
