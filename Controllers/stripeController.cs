@@ -66,7 +66,7 @@ public class StripeController : ControllerBase
         return Ok(new { url = sesion.Url });
     }
 
- [HttpGet("exito")]
+[HttpGet("exito")]
 [AllowAnonymous]
 public async Task<IActionResult> Exito(string session_id)
 {
@@ -81,50 +81,47 @@ public async Task<IActionResult> Exito(string session_id)
 
     int userId = int.Parse(usuarioIdStr);
 
-    var yaExiste = await _context.Pedidos
-        .AnyAsync(p => p.StripeSessionId == session_id);
-    if (yaExiste)
-        return Ok(new { mensaje = "Pedido ya procesado" });
+    // Evitar duplicados
+    var yaExiste = await _context.Pedidos.AnyAsync(p => p.StripeSessionId == session_id);
+    if (yaExiste) return Ok(new { mensaje = "Pedido ya procesado" });
 
+    // 1. Obtener Usuario con sus detalles de envío
+    var usuario = await _context.Usuarios
+        .Include(u => u.DetalleUsuario)
+        .FirstOrDefaultAsync(u => u.Id == userId);
+
+    if (usuario == null) return BadRequest("Usuario no encontrado");
+
+    // 2. Obtener Carrito con Variantes y Productos
     var carrito = await _context.CarritoItems
         .Include(c => c.Producto)
-        .Include(c => c.Variante) // ← incluir variante
+        .Include(c => c.Variante)
         .Where(c => c.UsuarioId == userId)
         .ToListAsync();
 
     if (!carrito.Any()) return BadRequest("Carrito vacío");
 
+    // 3. Procesar Stock y Pedido
     foreach (var item in carrito)
     {
-        if (item.VarianteId.HasValue && item.Variante != null)
-        {
-            if (item.Variante.Stock < item.Cantidad)
-                return BadRequest($"Stock insuficiente para {item.Producto.Nombre}");
+        if (item.VarianteId.HasValue && item.Variante != null) {
             item.Variante.Stock -= item.Cantidad;
-        }
-        else
-        {
-            if (item.Producto.Stock < item.Cantidad)
-                return BadRequest($"Stock insuficiente para {item.Producto.Nombre}");
+        } else {
             item.Producto.Stock -= item.Cantidad;
         }
     }
 
-    // ← precio real según variante
-    var total = carrito.Sum(c =>
-        (c.Variante != null ? c.Variante.Precio : c.Producto.Precio) * c.Cantidad);
+    var total = carrito.Sum(c => (c.Variante != null ? c.Variante.Precio : c.Producto.Precio) * c.Cantidad);
 
-    var pedido = new Pedido
-    {
+    var pedido = new Pedido {
         UsuarioId = userId,
         Fecha = DateTime.Now,
         Estado = "Pagado",
         Total = total,
         StripeSessionId = session_id,
-        Detalles = carrito.Select(c => new DetallePedido
-        {
+        Detalles = carrito.Select(c => new DetallePedido {
             ProductoId = c.ProductoId,
-            VarianteId = c.VarianteId,  // ← añadir
+            VarianteId = c.VarianteId,
             Cantidad = c.Cantidad,
             PrecioUnitario = c.Variante != null ? c.Variante.Precio : c.Producto.Precio
         }).ToList()
@@ -134,28 +131,81 @@ public async Task<IActionResult> Exito(string session_id)
     _context.CarritoItems.RemoveRange(carrito);
     await _context.SaveChangesAsync();
 
-    var usuario = await _context.Usuarios.FindAsync(userId);
-    if (usuario == null) return BadRequest("Usuario no encontrado");
+    // 4. Generar Tabla HTML para el Email
+    string filasHtml = "";
+    foreach (var c in carrito) {
+        var nombreItem = c.Producto.Nombre;
+        var subNombre = c.Variante != null ? $"<div style='font-size:12px; color:#64748b;'>Opción: {c.Variante.Nombre}</div>" : "";
+        var precio = c.Variante != null ? c.Variante.Precio : c.Producto.Precio;
+        
+        filasHtml += $@"
+            <tr>
+                <td style='padding:15px; border-bottom:1px solid #edf2f7;'>
+                    <span style='color:#1e293b; font-weight:600;'>{nombreItem}</span>
+                    {subNombre}
+                </td>
+                <td style='padding:15px; border-bottom:1px solid #edf2f7; text-align:center;'>{c.Cantidad}</td>
+                <td style='padding:15px; border-bottom:1px solid #edf2f7; text-align:right;'>{precio:0.00}€</td>
+                <td style='padding:15px; border-bottom:1px solid #edf2f7; text-align:right; font-weight:bold;'>{(precio * c.Cantidad):0.00}€</td>
+            </tr>";
+    }
 
-    var cuerpoCliente = $@"
-<h2>🧾 Gracias por tu compra</h2>
-<p>Tu pedido ha sido procesado correctamente.</p>
-<p><strong>Total:</strong> {total} €</p>
-<p><strong>Estado:</strong> Pagado</p>
-<p>En breve recibirás tu pedido 🚀</p>
-";
+    // 5. Cuerpo del Email Profesional
+    string nombreCliente = usuario.DetalleUsuario?.NombreCompleto ?? usuario.NombreUsuario;
+    string direccionEnvio = $@"
+        {usuario.DetalleUsuario?.Direccion}<br>
+        {usuario.DetalleUsuario?.CodigoPostal} {usuario.DetalleUsuario?.Ciudad}<br>
+        Tlf: {usuario.DetalleUsuario?.Telefono}";
 
-    _emailService.Send(usuario.Correo, "Confirmación de tu pedido", cuerpoCliente);
+    string emailHtml = $@"
+    <div style='background-color:#f8fafc; padding:40px; font-family:sans-serif;'>
+        <div style='max-width:600px; margin:0 auto; background:#ffffff; border-radius:16px; overflow:hidden; box-shadow:0 10px 15px rgba(0,0,0,0.05);'>
+            <div style='background:#1e293b; padding:30px; text-align:center; color:#ffffff;'>
+                <h1 style='margin:0; font-size:24px;'>¡Gracias por tu compra!</h1>
+                <p style='opacity:0.8;'>Confirmación de Pedido #{pedido.Id}</p>
+            </div>
+            
+            <div style='padding:30px;'>
+                <p>Hola <strong>{nombreCliente}</strong>,</p>
+                <p>Tu pedido ha sido recibido y está siendo preparado. Aquí tienes los detalles:</p>
 
-    var cuerpoAdmin = $@"
-<h2>🚨 Nuevo pedido recibido</h2>
-<p><strong>Usuario ID:</strong> {userId}</p>
-<p><strong>Total:</strong> {total} €</p>
-<p><strong>Fecha:</strong> {DateTime.Now}</p>
-<p>Revisa el panel de administración.</p>
-";
+                <table style='width:100%; border-collapse:collapse; margin-top:20px;'>
+                    <thead>
+                        <tr style='background:#f1f5f9; color:#475569; font-size:12px; text-transform:uppercase;'>
+                            <th style='padding:10px; text-align:left;'>Producto</th>
+                            <th style='padding:10px; text-align:center;'>Cant.</th>
+                            <th style='padding:10px; text-align:right;'>Precio</th>
+                            <th style='padding:10px; text-align:right;'>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filasHtml}
+                    </tbody>
+                </table>
 
-    _emailService.Send("victorcoco2005@gmail.com", "Nuevo pedido realizado", cuerpoAdmin);
+                <div style='margin-top:20px; text-align:right; padding:15px; background:#f8fafc; border-radius:12px;'>
+                    <span style='color:#64748b;'>Total Pagado:</span>
+                    <div style='font-size:32px; font-weight:800; color:#1e293b;'>{total:0.00}€</div>
+                </div>
+
+                <div style='margin-top:30px; border-top:1px solid #e2e8f0; padding-top:20px;'>
+                    <h4 style='margin-bottom:10px; color:#1e293b;'>📍 Dirección de Envío</h4>
+                    <p style='color:#64748b; font-size:14px; line-height:1.6;'>{direccionEnvio}</p>
+                </div>
+            </div>
+
+            <div style='background:#f1f5f9; padding:20px; text-align:center; color:#94a3b8; font-size:12px;'>
+                Este correo es automático. Por favor, no respondas directamente.<br>
+                © {DateTime.Now.Year} TuTienda. Todos los derechos reservados.
+            </div>
+        </div>
+    </div>";
+
+    // Enviar Emails
+    _emailService.Send(usuario.Correo, "Confirmación de Pedido 🛒", emailHtml);
+    
+    // Al Admin enviamos el mismo pero con aviso
+    _emailService.Send("victorcoco2005@gmail.com", $"NUEVO PEDIDO #{pedido.Id} - {nombreCliente}", emailHtml);
 
     return Ok(new { mensaje = "Pedido creado correctamente" });
 }

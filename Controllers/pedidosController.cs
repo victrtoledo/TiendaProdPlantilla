@@ -156,49 +156,94 @@ public class PedidosController : ControllerBase
         return NoContent();
     }
 
-    // 🔥 CAMBIAR ESTADO + EMAIL AUTOMÁTICO
-    [HttpPatch("{id}/estado")]
-    [Authorize(Roles = "admin")]
-    public async Task<IActionResult> CambiarEstado(int id, [FromBody] string nuevoEstado)
-    {
-        var pedido = await _context.Pedidos
-            .Include(p => p.Usuario)
-            .FirstOrDefaultAsync(p => p.Id == id);
+ 
+// 🔥 CAMBIAR ESTADO + EMAIL AUTOMÁTICO PROFESIONAL
+[HttpPatch("{id}/estado")]
+[Authorize(Roles = "admin")]
+public async Task<IActionResult> CambiarEstado(int id, [FromBody] string nuevoEstado)
+{
+    var pedido = await _context.Pedidos
+        .Include(p => p.Usuario)
+            .ThenInclude(u => u.DetalleUsuario)
+        .Include(p => p.Detalles)
+        .FirstOrDefaultAsync(p => p.Id == id);
 
-        if (pedido == null)
-            return NotFound();
+    if (pedido == null) return NotFound();
+    if (pedido.Estado == nuevoEstado) return Ok(new { mensaje = "El pedido ya tiene ese estado" });
 
-        if (pedido.Estado == nuevoEstado)
-            return Ok(new { mensaje = "No hay cambios" });
+    pedido.Estado = nuevoEstado;
+    await _context.SaveChangesAsync();
 
-        pedido.Estado = nuevoEstado;
-        await _context.SaveChangesAsync();
+    // Configuración visual según el estado
+    string colorEstado = nuevoEstado switch {
+        "Enviado" => "#3b82f6",   // Azul
+        "Entregado" => "#10b981",  // Verde
+        "Cancelado" => "#ef4444",  // Rojo
+        "Pagado" => "#6366f1",     // Indigo
+        _ => "#64748b"             // Gris
+    };
 
-        // 🔥 MENSAJE SEGÚN ESTADO
-        string mensaje = nuevoEstado switch
-        {
-            "Enviado" => "🚚 Tu pedido ha sido enviado",
-            "Entregado" => "📦 Tu pedido ha sido entregado",
-            "Cancelado" => "❌ Tu pedido ha sido cancelado",
-            "Pagado" => "💳 Tu pago ha sido confirmado",
-            _ => "📦 Tu pedido ha sido actualizado"
-        };
+    string iconoEstado = nuevoEstado switch {
+        "Enviado" => "🚚",
+        "Entregado" => "✅",
+        "Cancelado" => "❌",
+        "Pagado" => "💳",
+        _ => "📦"
+    };
 
-        var cuerpo = $@"
-<h2>{mensaje}</h2>
+    string nombreCliente = pedido.Usuario.DetalleUsuario?.NombreCompleto ?? pedido.Usuario.NombreUsuario;
 
-<p><strong>Pedido:</strong> #{pedido.Id}</p>
-<p><strong>Estado:</strong> {nuevoEstado}</p>
+    // Cuerpo del Email con diseño de "Timeline" o tarjeta de estado
+    string cuerpoHtml = $@"
+    <div style='background-color: #f1f5f9; padding: 40px; font-family: sans-serif;'>
+        <div style='max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05);'>
+            
+            <div style='background-color: {colorEstado}; padding: 30px; text-align: center; color: white;'>
+                <div style='font-size: 50px; margin-bottom: 10px;'>{iconoEstado}</div>
+                <h1 style='margin: 0; font-size: 22px; text-transform: uppercase; letter-spacing: 2px;'>Pedido {nuevoEstado}</h1>
+            </div>
 
-<p>Gracias por confiar en nosotros 🙌</p>
-";
+            <div style='padding: 30px;'>
+                <p style='font-size: 16px; color: #1e293b;'>Hola <b>{nombreCliente}</b>,</p>
+                <p style='color: #64748b; line-height: 1.6;'>Te informamos que tu pedido <b>#{pedido.Id}</b> ha cambiado su estado a: <span style='color: {colorEstado}; font-weight: bold;'>{nuevoEstado}</span>.</p>
+                
+                <div style='background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin: 25px 0;'>
+                    <table width='100%' style='font-size: 14px; color: #475569;'>
+                        <tr>
+                            <td style='padding-bottom: 8px;'><b>Nº de Seguimiento:</b></td>
+                            <td style='padding-bottom: 8px; text-align: right;'>{pedido.StripeSessionId?.Substring(0, 10).ToUpper() ?? "N/A"}</td>
+                        </tr>
+                        <tr>
+                            <td style='padding-bottom: 8px;'><b>Total del pedido:</b></td>
+                            <td style='padding-bottom: 8px; text-align: right; font-weight: bold; color: #1e293b;'>{pedido.Total:0.00}€</td>
+                        </tr>
+                        <tr>
+                            <td><b>Fecha actualización:</b></td>
+                            <td style='text-align: right;'>{DateTime.Now:dd/MM/yyyy HH:mm}</td>
+                        </tr>
+                    </table>
+                </div>
 
-        _emailService.Send(
-            pedido.Usuario.Correo,
-            "Actualización de tu pedido",
-            cuerpo
-        );
+                <div style='text-align: center; margin-top: 30px;'>
+                    <a href='https://plantillaecommerce-f5dhckf7acbkd0fe.spaincentral-01.azurewebsites.net/pedidos' style='background-color: {colorEstado}; color: white; padding: 14px 25px; text-decoration: none; border-radius: 10px; font-weight: bold; display: inline-block;'>
+                        Ver mi pedido en la web
+                    </a>
+                </div>
+            </div>
 
-        return Ok(new { mensaje = "Estado actualizado y notificado", estado = nuevoEstado });
-    }
+            <div style='background: #f1f5f9; padding: 20px; text-align: center; font-size: 12px; color: #94a3b8;'>
+                Si tienes alguna duda sobre tu envío, por favor contacta con soporte.<br>
+                © {DateTime.Now.Year} TuTienda Online.
+            </div>
+        </div>
+    </div>";
+
+    _emailService.Send(
+        pedido.Usuario.Correo,
+        $"{iconoEstado} Actualización de tu pedido #{pedido.Id}",
+        cuerpoHtml
+    );
+
+    return Ok(new { mensaje = "Estado actualizado y cliente notificado", nuevoEstado });
+}
 }
