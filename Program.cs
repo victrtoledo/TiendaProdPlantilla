@@ -7,15 +7,18 @@ using TiendaApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🔹 DB
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source=tienda.db";
+// 🔹 DB (en producción vendrá de Azure)
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+                      ?? "Data Source=tienda.db";
 
 builder.Services.AddDbContext<TiendaDbContext>(options =>
     options.UseSqlite(connectionString)
 );
 
-// 🔹 JWT
-var jwtSecretKey = builder.Configuration["Jwt:Key"] ?? "CAMBIAR_EN_PRODUCCION";
+// 🔹 JWT (desde Azure App Settings)
+var jwtSecretKey = builder.Configuration["Jwt:Key"] 
+                   ?? throw new Exception("JWT Key no configurada");
+
 var keyBytes = Encoding.ASCII.GetBytes(jwtSecretKey);
 
 builder.Services.AddAuthentication(options =>
@@ -25,21 +28,27 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = true; // 🔥 en Azure TRUE
+    options.RequireHttpsMetadata = true; // 🔥 obligatorio en Azure
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
-        ValidateIssuer = false,
-        ValidateAudience = false,
+
+        // 🔥 ahora sí usamos issuer/audience
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+
         ClockSkew = TimeSpan.Zero
     };
 });
 
 // 🔹 Controllers
 builder.Services.AddControllers().AddJsonOptions(x =>
-    x.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
+    x.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles
+);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -47,27 +56,31 @@ builder.Services.AddSwaggerGen();
 // 🔹 Email
 builder.Services.AddScoped<EmailService>();
 
-// 🔹 CORS (para Azure puedes abrirlo)
+// 🔹 CORS (más seguro que AllowAnyOrigin)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularApp", policy =>
     {
-        policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        policy.WithOrigins(
+            "http://localhost:4200",
+            "https://plantillaecommerce-f5dhckf7acbkd0fe.spaincentral-01.azurewebsites.net"
+        )
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials();
     });
 });
 
 var app = builder.Build();
 
-// 🔹 Swagger solo en dev
+// 🔹 Swagger solo en desarrollo
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// 🔥 IMPORTANTE PARA ANGULAR
+// 🔥 Angular (SPA)
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
@@ -80,7 +93,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// 🔥 CLAVE PARA ANGULAR (SPA)
+// 🔥 CLAVE PARA ANGULAR (SPA routing)
 app.MapFallbackToFile("index.html");
 
 app.Run();
