@@ -79,6 +79,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseDeveloperExceptionPage(); // 👈 ESTO
+}
 
 // 🔥 Angular (SPA)
 app.UseDefaultFiles();
