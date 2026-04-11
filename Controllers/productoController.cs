@@ -61,6 +61,16 @@ namespace TiendaApi.Controllers
 
             return NoContent();
         }
+        [HttpGet("relacionados/{categoriaId}/{productoId}")]
+        public async Task<IActionResult> GetRelacionados(int categoriaId, int productoId)
+        {
+            var productos = await _context.Productos
+                .Where(p => p.CategoriaId == categoriaId && p.Id != productoId)
+                .Take(4)
+                .ToListAsync();
+
+            return Ok(productos);
+        }
 
         // DELETE: api/productos/5
         [HttpDelete("{id}")]
@@ -87,4 +97,6 @@ namespace TiendaApi.Controllers
             return Ok(productos);
         }
     }
+
+    
 }

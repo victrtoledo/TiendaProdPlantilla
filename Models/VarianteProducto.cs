@@ -7,7 +7,8 @@ namespace TiendaApi.Models
         public decimal Precio { get; set; }
         public int Stock { get; set; }
         public int ProductoId { get; set; }            // producto PADRE (Carbocandy)
-        public int ProductoVarianteId { get; set; }    // producto HIJO (Carbocandy 5L)
+        public int ProductoVarianteId { get; set; }  
+        public string? ImagenUrl { get; set; }    // producto HIJO (Carbocandy 5L)
         public Producto? Producto { get; set; }
     }
 }

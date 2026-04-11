@@ -7,7 +7,7 @@ using TiendaApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🔹 DB (Azure o local)
+// 🔹 DB
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                       ?? "Data Source=tienda.db";
 
@@ -34,12 +34,10 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
-
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-
         ClockSkew = TimeSpan.Zero
     };
 });
@@ -73,7 +71,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// 🔹 Swagger
+// 🔹 Swagger solo en desarrollo
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -96,12 +94,20 @@ app.MapControllers();
 // 🔥 Angular routing fallback
 app.MapFallbackToFile("index.html");
 
-// 🔥 BASE DE DATOS (CORRECTO)
+// 🔥 BASE DE DATOS
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<TiendaDbContext>();
 
-    // ✔ aplica migraciones en vez de recrear BD
+    // Crear carpeta /home/data si no existe (Azure)
+    var connectionStr = builder.Configuration.GetConnectionString("DefaultConnection") ?? "";
+    if (connectionStr.Contains("/home/data"))
+    {
+        var dbDir = "/home/data";
+        if (!Directory.Exists(dbDir))
+            Directory.CreateDirectory(dbDir);
+    }
+
     db.Database.Migrate();
 }
 
