@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "84YqO+oV/72cQnbPpBHlW2whTNvlK43S5PSrZjGqAMU=",
+  "Hash": "QIcYyWKxATApHM8ojrbgGHP1YDXL9OO/rNFYzvecQAw=",
   "Source": "TiendaApi",
   "BasePath": "_content/TiendaApi",
   "Mode": "Default",
@@ -112,12 +112,12 @@
       "OriginalItemSpec": "wwwroot\\index.html"
     },
     {
-      "Identity": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\main-SP5EVEET.js",
+      "Identity": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\main-IMSIHRO3.js",
       "SourceId": "TiendaApi",
       "SourceType": "Discovered",
       "ContentRoot": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\",
       "BasePath": "_content/TiendaApi",
-      "RelativePath": "main-SP5EVEET.js",
+      "RelativePath": "main-IMSIHRO3.js",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -128,7 +128,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\main-SP5EVEET.js"
+      "OriginalItemSpec": "wwwroot\\main-IMSIHRO3.js"
     },
     {
       "Identity": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\polyfills-B6TNHZQ6.js",
@@ -167,6 +167,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\styles-NWLK27WH.css"
+    },
+    {
+      "Identity": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\carbocandy-5.jpeg",
+      "SourceId": "TiendaApi",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\",
+      "BasePath": "_content/TiendaApi",
+      "RelativePath": "uploads/productos/carbocandy-5.jpeg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\productos\\carbocandy-5.jpeg"
     },
     {
       "Identity": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\carbocandy.jpeg",

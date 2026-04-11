@@ -21,8 +21,8 @@
       "PackagePath": "staticwebassets\\index.html"
     },
     {
-      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\main-SP5EVEET.js",
-      "PackagePath": "staticwebassets\\main-SP5EVEET.js"
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\main-IMSIHRO3.js",
+      "PackagePath": "staticwebassets\\main-IMSIHRO3.js"
     },
     {
       "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\polyfills-B6TNHZQ6.js",
@@ -31,6 +31,10 @@
     {
       "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\styles-NWLK27WH.css",
       "PackagePath": "staticwebassets\\styles-NWLK27WH.css"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\carbocandy-5.jpeg",
+      "PackagePath": "staticwebassets\\uploads\\productos\\carbocandy-5.jpeg"
     },
     {
       "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\carbocandy.jpeg",

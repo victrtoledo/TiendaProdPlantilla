@@ -12,6 +12,7 @@ namespace TiendaApi.Models
         public string Nombre { get; set; }
 
         public string? Descripcion { get; set; }
+         public string? DescripcionLarga { get; set; }
 
         [Required]
         public decimal Precio { get; set; }
