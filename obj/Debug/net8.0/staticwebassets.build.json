@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "6JHSleNfxzsguOyYp+iiX4Wh/IAgHI20avYDv7cXDhc=",
+  "Hash": "h65hxuORnqtUnjrhJeW5l3y4LTEkVNKp6FGI/KbizNg=",
   "Source": "TiendaApi",
   "BasePath": "_content/TiendaApi",
   "Mode": "Default",
@@ -112,12 +112,12 @@
       "OriginalItemSpec": "wwwroot\\index.html"
     },
     {
-      "Identity": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\main-LSARWYHP.js",
+      "Identity": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\main-7ZYLRU4A.js",
       "SourceId": "TiendaApi",
       "SourceType": "Discovered",
       "ContentRoot": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\",
       "BasePath": "_content/TiendaApi",
-      "RelativePath": "main-LSARWYHP.js",
+      "RelativePath": "main-7ZYLRU4A.js",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -128,7 +128,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\main-LSARWYHP.js"
+      "OriginalItemSpec": "wwwroot\\main-7ZYLRU4A.js"
     },
     {
       "Identity": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\polyfills-B6TNHZQ6.js",
