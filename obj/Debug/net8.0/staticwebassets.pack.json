@@ -5,12 +5,36 @@
       "PackagePath": "staticwebassets\\assets\\img\\close-btn.png"
     },
     {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\assets\\img\\favicon_x20k.ico",
+      "PackagePath": "staticwebassets\\assets\\img\\favicon_x20k.ico"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\assets\\img\\favicon_x20k.png",
+      "PackagePath": "staticwebassets\\assets\\img\\favicon_x20k.png"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\assets\\img\\marijuana_banner.jpg",
+      "PackagePath": "staticwebassets\\assets\\img\\marijuana_banner.jpg"
+    },
+    {
       "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\assets\\img\\menuHamburguesa.jpg",
       "PackagePath": "staticwebassets\\assets\\img\\menuHamburguesa.jpg"
     },
     {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\assets\\img\\tiendaAlpamatian-1.webp",
+      "PackagePath": "staticwebassets\\assets\\img\\tiendaAlpamatian-1.webp"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\assets\\img\\tiendaAlpamatian-2.webp",
+      "PackagePath": "staticwebassets\\assets\\img\\tiendaAlpamatian-2.webp"
+    },
+    {
       "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\assets\\img\\whatsapp.svg",
       "PackagePath": "staticwebassets\\assets\\img\\whatsapp.svg"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\assets\\img\\x20k_logo.svg",
+      "PackagePath": "staticwebassets\\assets\\img\\x20k_logo.svg"
     },
     {
       "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\favicon.ico",
@@ -21,8 +45,8 @@
       "PackagePath": "staticwebassets\\index.html"
     },
     {
-      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\main-ED4A3TS4.js",
-      "PackagePath": "staticwebassets\\main-ED4A3TS4.js"
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\main-ALLVUN3L.js",
+      "PackagePath": "staticwebassets\\main-ALLVUN3L.js"
     },
     {
       "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\polyfills-B6TNHZQ6.js",
@@ -45,12 +69,52 @@
       "PackagePath": "staticwebassets\\uploads\\productos\\Bloom-5.jpeg"
     },
     {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\GLUCOSA-1L.webp",
+      "PackagePath": "staticwebassets\\uploads\\productos\\GLUCOSA-1L.webp"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\GLUCOSA-5L.webp",
+      "PackagePath": "staticwebassets\\uploads\\productos\\GLUCOSA-5L.webp"
+    },
+    {
       "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\Grow-10.jpeg",
       "PackagePath": "staticwebassets\\uploads\\productos\\Grow-10.jpeg"
     },
     {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\ROCK-1KG.webp",
+      "PackagePath": "staticwebassets\\uploads\\productos\\ROCK-1KG.webp"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\ROCK-3KG.webp",
+      "PackagePath": "staticwebassets\\uploads\\productos\\ROCK-3KG.webp"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\ROCK-5KG.webp",
+      "PackagePath": "staticwebassets\\uploads\\productos\\ROCK-5KG.webp"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\SILIC-500ML.webp",
+      "PackagePath": "staticwebassets\\uploads\\productos\\SILIC-500ML.webp"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\SPEED-BOOSTER-1L.webp",
+      "PackagePath": "staticwebassets\\uploads\\productos\\SPEED-BOOSTER-1L.webp"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\SPEED-BOOSTER-5L.webp",
+      "PackagePath": "staticwebassets\\uploads\\productos\\SPEED-BOOSTER-5L.webp"
+    },
+    {
       "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\Silic-1L.jpeg",
       "PackagePath": "staticwebassets\\uploads\\productos\\Silic-1L.jpeg"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\ULTRA-X20K-1L.webp",
+      "PackagePath": "staticwebassets\\uploads\\productos\\ULTRA-X20K-1L.webp"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\ULTRA-X20K-5L.webp",
+      "PackagePath": "staticwebassets\\uploads\\productos\\ULTRA-X20K-5L.webp"
     },
     {
       "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\Ultra-10.jpeg",
@@ -67,6 +131,14 @@
     {
       "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\carbocandy.jpeg",
       "PackagePath": "staticwebassets\\uploads\\productos\\carbocandy.jpeg"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\grow-1.webp",
+      "PackagePath": "staticwebassets\\uploads\\productos\\grow-1.webp"
+    },
+    {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\grow-5.webp",
+      "PackagePath": "staticwebassets\\uploads\\productos\\grow-5.webp"
     },
     {
       "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\uploads\\productos\\reactive-1.jpeg",
