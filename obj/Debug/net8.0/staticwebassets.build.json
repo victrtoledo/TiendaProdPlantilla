@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "SfoiH806MWfoYqNhrOCbmJmt6SyMBuyhSr8L8UMKEGw=",
+  "Hash": "3srXEob4ElLO5Xzfd7o5WT7qadJKBPA3NYBQNWGEZBQ=",
   "Source": "TiendaApi",
   "BasePath": "_content/TiendaApi",
   "Mode": "Default",
@@ -112,12 +112,12 @@
       "OriginalItemSpec": "wwwroot\\index.html"
     },
     {
-      "Identity": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\main-XUGPM5CL.js",
+      "Identity": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\main-ED4A3TS4.js",
       "SourceId": "TiendaApi",
       "SourceType": "Discovered",
       "ContentRoot": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\",
       "BasePath": "_content/TiendaApi",
-      "RelativePath": "main-XUGPM5CL.js",
+      "RelativePath": "main-ED4A3TS4.js",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -128,7 +128,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\main-XUGPM5CL.js"
+      "OriginalItemSpec": "wwwroot\\main-ED4A3TS4.js"
     },
     {
       "Identity": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\polyfills-B6TNHZQ6.js",
