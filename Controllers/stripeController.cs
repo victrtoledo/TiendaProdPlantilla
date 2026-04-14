@@ -8,6 +8,8 @@ using TiendaApi.Dtos;
 using TiendaApi.Models;
 using TiendaApi.Services;
 
+
+
 [ApiController]
 [Route("api/[controller]")]
 public class StripeController : ControllerBase
@@ -16,6 +18,8 @@ public class StripeController : ControllerBase
     private readonly IConfiguration _configuration;
 
     private readonly EmailService _emailService;
+    private const decimal DESCUENTO_PROFESIONAL = 0.20m;      // 20%
+    private const decimal MINIMO_PARA_DESCUENTO = 500m;        // €500
 
    public StripeController(
     TiendaDbContext context,
@@ -28,43 +32,55 @@ public class StripeController : ControllerBase
     StripeConfiguration.ApiKey = _configuration["Stripe:SecretKey"];
 }
     [HttpPost("crear-sesion")]
-    public async Task<IActionResult> CrearSesion([FromBody] CrearSesionDto dto)
+public async Task<IActionResult> CrearSesion([FromBody] CrearSesionDto dto)
+{
+    var usuario = await _context.Usuarios.FindAsync(dto.UsuarioId);
+    if (usuario == null) return Unauthorized("Usuario no encontrado");
+
+    var subtotal = dto.Productos.Sum(p => p.Precio * p.Cantidad);
+    var esProfesional = usuario.TipoUsuario?.ToLower() == "profesional";
+    var aplicaDescuento = esProfesional && subtotal >= MINIMO_PARA_DESCUENTO;
+    var porcentajeDescuento = aplicaDescuento ? DESCUENTO_PROFESIONAL : 0m;
+
+    var lineItems = dto.Productos.Select(p => new SessionLineItemOptions
     {
-        var usuario = await _context.Usuarios.FindAsync(dto.UsuarioId);
-        if (usuario == null) return Unauthorized("Usuario no encontrado");
-
-        var lineItems = dto.Productos.Select(p => new SessionLineItemOptions
+        PriceData = new SessionLineItemPriceDataOptions
         {
-            PriceData = new SessionLineItemPriceDataOptions
+            UnitAmount = (long)(p.Precio * (1 - porcentajeDescuento) * 100),
+            Currency = "eur",
+            ProductData = new SessionLineItemPriceDataProductDataOptions
             {
-                UnitAmount = (long)(p.Precio * 100),
-                Currency = "eur",
-                ProductData = new SessionLineItemPriceDataProductDataOptions
-                {
-                    Name = p.Nombre,
-                }
-            },
-            Quantity = p.Cantidad
-        }).ToList();
-
-        var opciones = new SessionCreateOptions
-        {
-            PaymentMethodTypes = new List<string> { "card" },
-            LineItems = lineItems,
-            Mode = "payment",
-            SuccessUrl = _configuration["Stripe:SuccessUrl"],
-            CancelUrl = _configuration["Stripe:CancelUrl"],
-            Metadata = new Dictionary<string, string>
-            {
-                { "usuarioId", dto.UsuarioId.ToString() } // ← guardar usuarioId en metadata
+                Name = aplicaDescuento
+                    ? $"{p.Nombre} (Precio Pro -{(int)(porcentajeDescuento*100)}%)"
+                    : p.Nombre,
             }
-        };
+        },
+        Quantity = p.Cantidad
+    }).ToList();
 
-        var servicio = new SessionService();
-        var sesion = await servicio.CreateAsync(opciones);
+    var opciones = new SessionCreateOptions
+    {
+        PaymentMethodTypes = new List<string> { "card" },
+        LineItems = lineItems,
+        Mode = "payment",
+        SuccessUrl = _configuration["Stripe:SuccessUrl"],
+        CancelUrl = _configuration["Stripe:CancelUrl"],
+        Metadata = new Dictionary<string, string>
+        {
+            { "usuarioId", dto.UsuarioId.ToString() },
+            { "descuento", porcentajeDescuento.ToString() }
+        }
+    };
 
-        return Ok(new { url = sesion.Url });
-    }
+    var servicio = new SessionService();
+    var sesion = await servicio.CreateAsync(opciones);
+
+    return Ok(new {
+        url = sesion.Url,
+        descuentoAplicado = aplicaDescuento,
+        porcentaje = (int)(porcentajeDescuento * 100)
+    });
+}
 
 [HttpGet("exito")]
 [AllowAnonymous]

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TiendaApi.Data;
 
@@ -10,9 +11,11 @@ using TiendaApi.Data;
 namespace TiendaApi.Migrations
 {
     [DbContext(typeof(TiendaDbContext))]
-    partial class TiendaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260414090832_AddTipoUsuario")]
+    partial class AddTipoUsuario
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.7");
@@ -194,13 +197,6 @@ namespace TiendaApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("Activo")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Cif")
-                        .HasMaxLength(20)
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("ContrasenaHash")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -212,10 +208,6 @@ namespace TiendaApi.Migrations
                     b.Property<DateTime>("FechaRegistro")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("NombreEmpresa")
-                        .HasMaxLength(150)
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("NombreUsuario")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -223,10 +215,6 @@ namespace TiendaApi.Migrations
 
                     b.Property<string>("Rol")
                         .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Telefono")
-                        .HasMaxLength(20)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("TipoUsuario")
