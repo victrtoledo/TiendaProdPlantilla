@@ -114,7 +114,7 @@ public async Task<IActionResult> Login(LoginRequest request)
                 <p>Revisa los datos en el registro mercantil y activa al usuario desde el panel de control.</p>
             </div>";
 
-        _emailService.Send("victorcoco2005@gmail.com", "🚀 Nueva solicitud de cuenta PRO - " + datos.NombreEmpresa, htmlAdmin);
+        _emailService.Send("soportex20k@gmail.com", "🚀 Nueva solicitud de cuenta PRO - " + datos.NombreEmpresa, htmlAdmin);
 
         // --- EMAIL PARA EL CLIENTE ---
         string htmlCliente = $@"

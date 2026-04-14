@@ -82,7 +82,7 @@ public IActionResult EnviarContacto(ContactoDto contacto)
 
         // Usamos tu servicio con los 4 parámetros
         _emailService.Send(
-            "victorcoco2005@gmail.com",                  // Destinatario (tú)
+            "soportex20k@gmail.com",                  // Destinatario (tú)
             $"📩 Contacto: {contacto.Nombre}",            // Asunto
             cuerpoHtml,                                   // El HTML profesional
             contacto.Email                                // Para que al dar a "Responder" le llegue a él

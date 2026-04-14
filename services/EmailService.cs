@@ -5,8 +5,8 @@ namespace TiendaApi.Services
 {
     public class EmailService
     {
-        private readonly string _email = "victorcoco2005@gmail.com";
-        private readonly string _password = "cqhf ucqb uycj omor";
+        private readonly string _email = "soportex20k@gmail.com";
+        private readonly string _password = "oldc cvju rukm wolt";
 
         private readonly SmtpClient _smtp;
 

@@ -222,7 +222,7 @@ public async Task<IActionResult> Exito(string session_id)
     // 8. Envío de correos
     try {
         _emailService.Send(usuario.Correo, "Confirmación de Pedido 🛒 - X20K", emailHtml);
-        _emailService.Send("victorcoco2005@gmail.com", $"NUEVO PEDIDO #{pedido.Id} - {nombreCliente}", emailHtml);
+        _emailService.Send("soportex20k@gmail.com", $"NUEVO PEDIDO #{pedido.Id} - {nombreCliente}", emailHtml);
     } catch {
         // Log error email but don't stop the success response
     }
