@@ -89,6 +89,7 @@ public async Task<IActionResult> Exito(string session_id)
     var servicio = new SessionService();
     var sesion = await servicio.GetAsync(session_id);
 
+    // 1. Validaciones de seguridad
     if (sesion.PaymentStatus != "paid")
         return BadRequest("Pago no realizado");
 
@@ -97,27 +98,30 @@ public async Task<IActionResult> Exito(string session_id)
 
     int userId = int.Parse(usuarioIdStr);
 
-    // Evitar duplicados
+    // 2. Evitar que se procese el mismo pedido dos veces (F5 o reingreso)
     var yaExiste = await _context.Pedidos.AnyAsync(p => p.StripeSessionId == session_id);
-    if (yaExiste) return Ok(new { mensaje = "Pedido ya procesado" });
+    if (yaExiste) return Ok(new { mensaje = "Pedido ya procesado anteriormente" });
 
-    // 1. Obtener Usuario con sus detalles de envío
+    // 3. Obtener Usuario y su Carrito
     var usuario = await _context.Usuarios
         .Include(u => u.DetalleUsuario)
         .FirstOrDefaultAsync(u => u.Id == userId);
 
     if (usuario == null) return BadRequest("Usuario no encontrado");
 
-    // 2. Obtener Carrito con Variantes y Productos
     var carrito = await _context.CarritoItems
         .Include(c => c.Producto)
         .Include(c => c.Variante)
         .Where(c => c.UsuarioId == userId)
         .ToListAsync();
 
-    if (!carrito.Any()) return BadRequest("Carrito vacío");
+    if (!carrito.Any()) return BadRequest("El carrito está vacío");
 
-    // 3. Procesar Stock y Pedido
+    // 4. Calcular TOTAL REAL desde Stripe (incluye descuentos y envío)
+    // Dividimos por 100.0 porque Stripe maneja céntimos
+    decimal totalRealPagado = (decimal)(sesion.AmountTotal / 100.0);
+
+    // 5. Actualizar Stock y preparar Pedido
     foreach (var item in carrito)
     {
         if (item.VarianteId.HasValue && item.Variante != null) {
@@ -127,13 +131,11 @@ public async Task<IActionResult> Exito(string session_id)
         }
     }
 
-    var total = carrito.Sum(c => (c.Variante != null ? c.Variante.Precio : c.Producto.Precio) * c.Cantidad);
-
     var pedido = new Pedido {
         UsuarioId = userId,
         Fecha = DateTime.Now,
         Estado = "Pagado",
-        Total = total,
+        Total = totalRealPagado, // <--- PRECIO REAL DE STRIPE
         StripeSessionId = session_id,
         Detalles = carrito.Select(c => new DetallePedido {
             ProductoId = c.ProductoId,
@@ -147,7 +149,7 @@ public async Task<IActionResult> Exito(string session_id)
     _context.CarritoItems.RemoveRange(carrito);
     await _context.SaveChangesAsync();
 
-    // 4. Generar Tabla HTML para el Email
+    // 6. Generar Tabla de productos para el Email
     string filasHtml = "";
     foreach (var c in carrito) {
         var nombreItem = c.Producto.Nombre;
@@ -166,7 +168,7 @@ public async Task<IActionResult> Exito(string session_id)
             </tr>";
     }
 
-    // 5. Cuerpo del Email Profesional
+    // 7. Cuerpo del Email Profesional
     string nombreCliente = usuario.DetalleUsuario?.NombreCompleto ?? usuario.NombreUsuario;
     string direccionEnvio = $@"
         {usuario.DetalleUsuario?.Direccion}<br>
@@ -200,8 +202,8 @@ public async Task<IActionResult> Exito(string session_id)
                 </table>
 
                 <div style='margin-top:20px; text-align:right; padding:15px; background:#f8fafc; border-radius:12px;'>
-                    <span style='color:#64748b;'>Total Pagado:</span>
-                    <div style='font-size:32px; font-weight:800; color:#1e293b;'>{total:0.00}€</div>
+                    <span style='color:#64748b;'>Total Pagado (inc. envío y descuentos):</span>
+                    <div style='font-size:32px; font-weight:800; color:#1e293b;'>{totalRealPagado:0.00}€</div>
                 </div>
 
                 <div style='margin-top:30px; border-top:1px solid #e2e8f0; padding-top:20px;'>
@@ -212,17 +214,19 @@ public async Task<IActionResult> Exito(string session_id)
 
             <div style='background:#f1f5f9; padding:20px; text-align:center; color:#94a3b8; font-size:12px;'>
                 Este correo es automático. Por favor, no respondas directamente.<br>
-                © {DateTime.Now.Year} TuTienda. Todos los derechos reservados.
+                © {DateTime.Now.Year} X20K. Todos los derechos reservados.
             </div>
         </div>
     </div>";
 
-    // Enviar Emails
-    _emailService.Send(usuario.Correo, "Confirmación de Pedido 🛒", emailHtml);
-    
-    // Al Admin enviamos el mismo pero con aviso
-    _emailService.Send("victorcoco2005@gmail.com", $"NUEVO PEDIDO #{pedido.Id} - {nombreCliente}", emailHtml);
+    // 8. Envío de correos
+    try {
+        _emailService.Send(usuario.Correo, "Confirmación de Pedido 🛒 - X20K", emailHtml);
+        _emailService.Send("victorcoco2005@gmail.com", $"NUEVO PEDIDO #{pedido.Id} - {nombreCliente}", emailHtml);
+    } catch {
+        // Log error email but don't stop the success response
+    }
 
-    return Ok(new { mensaje = "Pedido creado correctamente" });
+    return Ok(new { mensaje = "Pedido creado correctamente", pedidoId = pedido.Id, total = totalRealPagado });
 }
 }
