@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "2ELrOyHkWb5eu5MCj7Hs+AdrRoFhYw7eUpgczsGjlsU=",
+  "Hash": "ubgPjnSftXbYqKJI4ojirs/qvEF4ZmrZVaoP4QUtpkM=",
   "Source": "TiendaApi",
   "BasePath": "_content/TiendaApi",
   "Mode": "Default",
@@ -226,12 +226,12 @@
       "OriginalItemSpec": "wwwroot\\index.html"
     },
     {
-      "Identity": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\main-VEGZSB2A.js",
+      "Identity": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\main-NNI4C2PF.js",
       "SourceId": "TiendaApi",
       "SourceType": "Discovered",
       "ContentRoot": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\",
       "BasePath": "_content/TiendaApi",
-      "RelativePath": "main-VEGZSB2A.js",
+      "RelativePath": "main-NNI4C2PF.js",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -242,7 +242,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\main-VEGZSB2A.js"
+      "OriginalItemSpec": "wwwroot\\main-NNI4C2PF.js"
     },
     {
       "Identity": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\polyfills-B6TNHZQ6.js",
