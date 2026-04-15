@@ -169,6 +169,35 @@ public async Task<IActionResult> ObtenerPendientes()
 
     return Ok(pendientes);
 }
+[Authorize]
+[HttpPut("cambiar-password")]
+public async Task<IActionResult> CambiarPassword([FromBody] ChangePasswordRequest2 request)
+{
+    var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+    var usuario = await _context.Usuarios.FindAsync(userId);
+    if (usuario == null) return NotFound();
+
+    if (!BCrypt.Net.BCrypt.Verify(request.PasswordActual, usuario.ContrasenaHash))
+        return BadRequest("La contraseña actual es incorrecta.");
+
+    usuario.ContrasenaHash = BCrypt.Net.BCrypt.HashPassword(request.NuevaPassword);
+    await _context.SaveChangesAsync();
+
+    return Ok("Contraseña actualizada correctamente.");
+}
+
+[HttpPost("recuperar-password")]
+public async Task<IActionResult> RecuperarPassword([FromBody] ChangePasswordRequest request)
+{
+    var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Correo == request.Correo);
+    if (usuario == null)
+        return BadRequest("No existe ninguna cuenta con ese correo.");
+
+    usuario.ContrasenaHash = BCrypt.Net.BCrypt.HashPassword(request.NuevaPassword);
+    await _context.SaveChangesAsync();
+
+    return Ok("Contraseña actualizada correctamente.");
+}
     private string CrearToken(Usuario usuario)
     {
         var claims = new[]
