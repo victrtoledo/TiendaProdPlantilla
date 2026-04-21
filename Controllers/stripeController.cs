@@ -92,8 +92,8 @@ public async Task<IActionResult> CrearSesion([FromBody] CrearSesionDto dto)
 [AllowAnonymous]
 public async Task<IActionResult> Exito(string session_id)
 {
-    var servicio = new SessionService();
-    var sesion = await servicio.GetAsync(session_id);
+    var servicioSesion = new SessionService();
+    var sesion = await servicioSesion.GetAsync(session_id);
 
     // 1. Validaciones de seguridad
     if (sesion.PaymentStatus != "paid")
@@ -104,11 +104,11 @@ public async Task<IActionResult> Exito(string session_id)
 
     int userId = int.Parse(usuarioIdStr);
 
-    // 2. Evitar que se procese el mismo pedido dos veces (F5 o reingreso)
+    // 2. Evitar duplicados (F5)
     var yaExiste = await _context.Pedidos.AnyAsync(p => p.StripeSessionId == session_id);
     if (yaExiste) return Ok(new { mensaje = "Pedido ya procesado anteriormente" });
 
-    // 3. Obtener Usuario y su Carrito
+    // 3. Obtener Usuario y Carrito
     var usuario = await _context.Usuarios
         .Include(u => u.DetalleUsuario)
         .FirstOrDefaultAsync(u => u.Id == userId);
@@ -123,11 +123,19 @@ public async Task<IActionResult> Exito(string session_id)
 
     if (!carrito.Any()) return BadRequest("El carrito está vacío");
 
-    // 4. Calcular TOTAL REAL desde Stripe (incluye descuentos y envío)
-    // Dividimos por 100.0 porque Stripe maneja céntimos
+    // 4. Obtener URL de la Factura PDF de Stripe
+    string urlFacturaPdf = "";
+    if (!string.IsNullOrEmpty(sesion.InvoiceId))
+    {
+        var servicioFactura = new InvoiceService();
+        var facturaStripe = await servicioFactura.GetAsync(sesion.InvoiceId);
+        urlFacturaPdf = facturaStripe.InvoicePdf;
+    }
+
+    // 5. Calcular TOTAL REAL (céntimos a euros)
     decimal totalRealPagado = (decimal)(sesion.AmountTotal / 100.0);
 
-    // 5. Actualizar Stock y preparar Pedido
+    // 6. Actualizar Stock y Crear Pedido
     foreach (var item in carrito)
     {
         if (item.VarianteId.HasValue && item.Variante != null) {
@@ -141,7 +149,7 @@ public async Task<IActionResult> Exito(string session_id)
         UsuarioId = userId,
         Fecha = DateTime.Now,
         Estado = "Pagado",
-        Total = totalRealPagado, // <--- PRECIO REAL DE STRIPE
+        Total = totalRealPagado,
         StripeSessionId = session_id,
         Detalles = carrito.Select(c => new DetallePedido {
             ProductoId = c.ProductoId,
@@ -155,7 +163,7 @@ public async Task<IActionResult> Exito(string session_id)
     _context.CarritoItems.RemoveRange(carrito);
     await _context.SaveChangesAsync();
 
-    // 6. Generar Tabla de productos para el Email
+    // 7. Generar Tabla HTML para el Email
     string filasHtml = "";
     foreach (var c in carrito) {
         var nombreItem = c.Producto.Nombre;
@@ -174,28 +182,38 @@ public async Task<IActionResult> Exito(string session_id)
             </tr>";
     }
 
-    // 7. Cuerpo del Email Profesional
+    // 8. Botón de Factura (si existe)
+    string botonFacturaHtml = "";
+    if (!string.IsNullOrEmpty(urlFacturaPdf))
+    {
+        botonFacturaHtml = $@"
+            <div style='text-align:center; margin-top:25px; margin-bottom:10px;'>
+                <a href='{urlFacturaPdf}' style='background-color:#22c55e; color:#ffffff; padding:14px 28px; text-decoration:none; border-radius:10px; font-weight:bold; display:inline-block; box-shadow:0 4px 6px rgba(34,197,94,0.2);'>
+                    📄 Descargar Factura PDF
+                </a>
+                <p style='color:#94a3b8; font-size:12px; margin-top:10px;'>Documento oficial de compra</p>
+            </div>";
+    }
+
+    // 9. Cuerpo del Email
     string nombreCliente = usuario.DetalleUsuario?.NombreCompleto ?? usuario.NombreUsuario;
-    string direccionEnvio = $@"
-        {usuario.DetalleUsuario?.Direccion}<br>
-        {usuario.DetalleUsuario?.CodigoPostal} {usuario.DetalleUsuario?.Ciudad}<br>
-        Tlf: {usuario.DetalleUsuario?.Telefono}";
+    string direccionEnvio = $"{usuario.DetalleUsuario?.Direccion}<br>{usuario.DetalleUsuario?.CodigoPostal} {usuario.DetalleUsuario?.Ciudad}<br>Tlf: {usuario.DetalleUsuario?.Telefono}";
 
     string emailHtml = $@"
     <div style='background-color:#f8fafc; padding:40px; font-family:sans-serif;'>
         <div style='max-width:600px; margin:0 auto; background:#ffffff; border-radius:16px; overflow:hidden; box-shadow:0 10px 15px rgba(0,0,0,0.05);'>
             <div style='background:#1e293b; padding:30px; text-align:center; color:#ffffff;'>
-                <h1 style='margin:0; font-size:24px;'>¡Gracias por tu compra!</h1>
-                <p style='opacity:0.8;'>Confirmación de Pedido #{pedido.Id}</p>
+                <h1 style='margin:0; font-size:24px;'>¡Confirmación de Pedido!</h1>
+                <p style='opacity:0.8;'>Gracias por confiar en X20K • Pedido #{pedido.Id}</p>
             </div>
             
             <div style='padding:30px;'>
                 <p>Hola <strong>{nombreCliente}</strong>,</p>
-                <p>Tu pedido ha sido recibido y está siendo preparado. Aquí tienes los detalles:</p>
+                <p>Hemos recibido tu pago correctamente. Tu arsenal de nutrición ya está en proceso de preparación.</p>
 
                 <table style='width:100%; border-collapse:collapse; margin-top:20px;'>
                     <thead>
-                        <tr style='background:#f1f5f9; color:#475569; font-size:12px; text-transform:uppercase;'>
+                        <tr style='background:#f1f5f9; color:#475569; font-size:11px; text-transform:uppercase; letter-spacing:1px;'>
                             <th style='padding:10px; text-align:left;'>Producto</th>
                             <th style='padding:10px; text-align:center;'>Cant.</th>
                             <th style='padding:10px; text-align:right;'>Precio</th>
@@ -207,32 +225,32 @@ public async Task<IActionResult> Exito(string session_id)
                     </tbody>
                 </table>
 
-                <div style='margin-top:20px; text-align:right; padding:15px; background:#f8fafc; border-radius:12px;'>
-                    <span style='color:#64748b;'>Total Pagado (inc. envío y descuentos):</span>
+                <div style='margin-top:20px; text-align:right; padding:20px; background:#f8fafc; border-radius:12px; border:1px solid #edf2f7;'>
+                    <span style='color:#64748b; font-size:14px;'>Total Final Pagado:</span>
                     <div style='font-size:32px; font-weight:800; color:#1e293b;'>{totalRealPagado:0.00}€</div>
                 </div>
 
+                {botonFacturaHtml}
+
                 <div style='margin-top:30px; border-top:1px solid #e2e8f0; padding-top:20px;'>
-                    <h4 style='margin-bottom:10px; color:#1e293b;'>📍 Dirección de Envío</h4>
-                    <p style='color:#64748b; font-size:14px; line-height:1.6;'>{direccionEnvio}</p>
+                    <h4 style='margin-bottom:8px; color:#1e293b; font-size:16px;'>📍 Detalles de Envío</h4>
+                    <p style='color:#64748b; font-size:14px; line-height:1.6; margin:0;'>{direccionEnvio}</p>
                 </div>
             </div>
 
             <div style='background:#f1f5f9; padding:20px; text-align:center; color:#94a3b8; font-size:12px;'>
-                Este correo es automático. Por favor, no respondas directamente.<br>
-                © {DateTime.Now.Year} X20K. Todos los derechos reservados.
+                © {DateTime.Now.Year} X20K Nutrición Profesional.<br>
+                Envío discreto y garantizado.
             </div>
         </div>
     </div>";
 
-    // 8. Envío de correos
+    // 10. Envío de Emails
     try {
-        _emailService.Send(usuario.Correo, "Confirmación de Pedido 🛒 - X20K", emailHtml);
+        _emailService.Send(usuario.Correo, $"Confirmación de Pedido #{pedido.Id} - X20K", emailHtml);
         _emailService.Send("soportex20k@gmail.com", $"NUEVO PEDIDO #{pedido.Id} - {nombreCliente}", emailHtml);
-    } catch {
-        // Log error email but don't stop the success response
-    }
+    } catch { /* Log error */ }
 
-    return Ok(new { mensaje = "Pedido creado correctamente", pedidoId = pedido.Id, total = totalRealPagado });
+    return Ok(new { mensaje = "Éxito", pedidoId = pedido.Id, factura = urlFacturaPdf });
 }
 }
