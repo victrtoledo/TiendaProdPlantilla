@@ -31,7 +31,8 @@ public class StripeController : ControllerBase
     _emailService = emailService;
     StripeConfiguration.ApiKey = _configuration["Stripe:SecretKey"];
 }
-    [HttpPost("crear-sesion")]
+   
+[HttpPost("crear-sesion")]
 public async Task<IActionResult> CrearSesion([FromBody] CrearSesionDto dto)
 {
     var usuario = await _context.Usuarios.FindAsync(dto.UsuarioId);
@@ -65,6 +66,11 @@ public async Task<IActionResult> CrearSesion([FromBody] CrearSesionDto dto)
         Mode = "payment",
         SuccessUrl = _configuration["Stripe:SuccessUrl"],
         CancelUrl = _configuration["Stripe:CancelUrl"],
+        CustomerEmail = usuario.Correo, // ← email del cliente para la factura
+        InvoiceCreation = new SessionInvoiceCreationOptions // ← genera factura PDF
+        {
+            Enabled = true
+        },
         Metadata = new Dictionary<string, string>
         {
             { "usuarioId", dto.UsuarioId.ToString() },

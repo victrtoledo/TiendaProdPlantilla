@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "ubgPjnSftXbYqKJI4ojirs/qvEF4ZmrZVaoP4QUtpkM=",
+  "Hash": "+ZhIDCAO28z1BC1dAKq6eJYuYbQFMOS5LQHF7nxaunw=",
   "Source": "TiendaApi",
   "BasePath": "_content/TiendaApi",
   "Mode": "Default",
@@ -188,25 +188,6 @@
       "OriginalItemSpec": "wwwroot\\assets\\img\\x20k_logo.svg"
     },
     {
-      "Identity": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\favicon.ico",
-      "SourceId": "TiendaApi",
-      "SourceType": "Discovered",
-      "ContentRoot": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\",
-      "BasePath": "_content/TiendaApi",
-      "RelativePath": "favicon.ico",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\favicon.ico"
-    },
-    {
       "Identity": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\index.html",
       "SourceId": "TiendaApi",
       "SourceType": "Discovered",
@@ -226,12 +207,12 @@
       "OriginalItemSpec": "wwwroot\\index.html"
     },
     {
-      "Identity": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\main-NNI4C2PF.js",
+      "Identity": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\main-WH7OHXM3.js",
       "SourceId": "TiendaApi",
       "SourceType": "Discovered",
       "ContentRoot": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\",
       "BasePath": "_content/TiendaApi",
-      "RelativePath": "main-NNI4C2PF.js",
+      "RelativePath": "main-WH7OHXM3.js",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -242,7 +223,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\main-NNI4C2PF.js"
+      "OriginalItemSpec": "wwwroot\\main-WH7OHXM3.js"
     },
     {
       "Identity": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\polyfills-B6TNHZQ6.js",

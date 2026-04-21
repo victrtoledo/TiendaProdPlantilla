@@ -28,7 +28,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = true;
+    options.RequireHttpsMetadata = !builder.Environment.IsDevelopment(); // ← false en dev, true en prod
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -59,9 +59,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularApp", policy =>
     {
-        policy.WithOrigins(
+       policy.WithOrigins(
             "http://localhost:4200",
-            "https://plantillaecommerce-f5dhckf7acbkd0fe.spaincentral-01.azurewebsites.net"
+            "https://localhost:4200", // ← añadir
+            "https://x20k.com"
         )
         .AllowAnyHeader()
         .AllowAnyMethod()
