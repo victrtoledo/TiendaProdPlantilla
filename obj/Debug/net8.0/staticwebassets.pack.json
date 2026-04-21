@@ -37,12 +37,16 @@
       "PackagePath": "staticwebassets\\assets\\img\\x20k_logo.svg"
     },
     {
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\favicon.ico",
+      "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
       "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\index.html",
       "PackagePath": "staticwebassets\\index.html"
     },
     {
-      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\main-WH7OHXM3.js",
-      "PackagePath": "staticwebassets\\main-WH7OHXM3.js"
+      "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\main-TYABXFVO.js",
+      "PackagePath": "staticwebassets\\main-TYABXFVO.js"
     },
     {
       "Id": "D:\\TiendaTemplate\\Backend\\TiendaApi\\wwwroot\\polyfills-B6TNHZQ6.js",
