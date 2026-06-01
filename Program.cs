@@ -64,7 +64,7 @@ builder.Services.AddCors(options =>
             "https://localhost:4200", // ← añadir
             "https://x20k.com",               // Tu dominio oficial
             "https://www.x20k.com",           // Con www
-            "https://x20k1.azurewebsites.net"
+            "https://x20k-e9bbcvbwczgwdkbc.spaincentral-01.azurewebsites.net"
         )
         .AllowAnyHeader()
         .AllowAnyMethod()
